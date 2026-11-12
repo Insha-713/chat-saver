@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conversation Details | Chat Saver – Advanced Edition</title>
+  <link rel="stylesheet" href="details.css">
+</head>
+<body>
+  <div class="details-shell">
+    <!-- Top Sticky Header -->
+    <header class="details-topbar">
+      <div class="details-topbar__left">
+        <a href="history.html" class="btn btn--secondary btn--sm">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
+          Back to Dashboard
+        </a>
+        <div class="topbar-brand">
+          <img src="../assets/icons/icon32.png" alt="" class="topbar-brand__icon">
+          <span class="topbar-brand__name">Chat Saver</span>
+        </div>
+      </div>
+
+      <div class="details-topbar__actions" id="actionBar">
+        <div class="filename-inline" title="Custom export filename (without extension)">
+          <label for="customFilenameInput" class="filename-inline__label">File:</label>
+          <input id="customFilenameInput" type="text" class="text-input text-input--sm" placeholder="Custom filename">
+        </div>
+        <button id="exportPdfBtn" class="btn btn--primary btn--sm" type="button">Export PDF</button>
+        <button id="exportMdBtn" class="btn btn--secondary btn--sm" type="button">Export Markdown</button>
+        <button id="exportTxtBtn" class="btn btn--secondary btn--sm" type="button">Export TXT</button>
+        <button id="editTitleBtn" class="btn btn--secondary btn--sm" type="button">Edit Title</button>
+        <button id="deleteChatBtn" class="btn btn--danger-soft btn--sm" type="button">Delete</button>
+        <button id="themeToggleBtn" class="icon-btn" type="button" title="Toggle Theme" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path></svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Not Found State -->
+    <main id="notFoundState" class="not-found hidden">
+      <h2>Conversation not found</h2>
+      <p>This saved conversation may have been deleted or the URL parameter is missing.</p>
+      <a href="history.html" class="btn btn--primary">Return to Dashboard</a>
+    </main>
+
+    <!-- Main Conversation Content -->
+    <main id="detailsMain" class="details-main hidden">
+      <!-- Metadata Header Card -->
+      <section class="meta-card">
+        <div class="meta-card__top">
+          <div class="meta-card__badges">
+            <span id="platformBadge" class="platform-badge">Platform</span>
+            <span id="msgCountBadge" class="meta-pill">0 messages</span>
+            <span id="favStatusBadge" class="meta-pill hidden">★ Favorite</span>
+          </div>
+          <button id="favToggleBtn" class="btn btn--secondary btn--sm" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span id="favToggleLabel">Add to Favorites</span>
+          </button>
+        </div>
+
+        <h1 id="chatTitle" class="meta-card__title">Conversation Title</h1>
+
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-item__label">Saved Date</span>
+            <span id="savedDateValue" class="meta-item__value">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-item__label">Last Updated</span>
+            <span id="updatedDateValue" class="meta-item__value">—</span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-item__label">Folder</span>
+            <select id="folderSelect" class="select-input select-input--sm" aria-label="Conversation folder"></select>
+          </div>
+          <div class="meta-item meta-item--url">
+            <span class="meta-item__label">Original Source URL</span>
+            <span id="sourceUrlContainer" class="meta-item__value">—</span>
+          </div>
+        </div>
+
+        <div class="tags-section">
+          <span class="meta-item__label">Tags</span>
+          <div class="tags-row">
+            <div id="tagsList" class="tags-list"></div>
+            <form id="addTagForm" class="add-tag-form">
+              <input id="newTagInput" type="text" class="text-input text-input--sm" placeholder="Add tag…" list="existingTagsDatalist">
+              <datalist id="existingTagsDatalist"></datalist>
+              <button class="btn btn--secondary btn--sm" type="submit">+ Add</button>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- Full Message Thread -->
+      <section class="thread-section" aria-label="Conversation messages">
+        <div id="messagesList" class="messages-list"></div>
+      </section>
+    </main>
+
+    <button id="scrollTopBtn" class="scroll-top-btn hidden" type="button" title="Scroll to top" aria-label="Scroll to top">↑</button>
+  </div>
+
+  <!-- Confirmation / Edit Modal -->
+  <div id="modalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-card__header">
+        <h3 id="modalTitle" class="modal-card__title">Modal</h3>
+        <button id="modalCloseBtn" class="icon-btn" type="button" aria-label="Close modal">×</button>
+      </div>
+      <div id="modalBody" class="modal-card__body"></div>
+      <div id="modalFooter" class="modal-card__footer"></div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="../lib/jspdf.umd.min.js"></script>
+  <script type="module" src="details.js"></script>
+</body>
+</html>

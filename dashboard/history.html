@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Saver – Advanced Edition | Dashboard</title>
+  <link rel="stylesheet" href="history.css">
+</head>
+<body>
+  <div class="app-layout">
+    <!-- Mobile Sidebar Backdrop -->
+    <div id="sidebarBackdrop" class="sidebar-backdrop hidden"></div>
+
+    <!-- Left Sidebar -->
+    <aside id="sidebar" class="sidebar" aria-label="Dashboard navigation">
+      <div class="sidebar__brand">
+        <img src="../assets/icons/icon48.png" alt="Chat Saver icon" class="sidebar__logo">
+        <div class="sidebar__brand-text">
+          <div class="sidebar__title-row">
+            <span class="sidebar__title">Chat Saver</span>
+            <span class="badge-pro">PRO</span>
+          </div>
+          <span class="sidebar__subtitle">Organized Forever</span>
+        </div>
+        <button id="closeSidebarBtn" class="icon-btn mobile-only" type="button" aria-label="Close sidebar">×</button>
+      </div>
+
+      <nav class="sidebar__nav">
+        <div class="nav-group">
+          <div class="nav-group__label">Library</div>
+          <button class="nav-item is-active" type="button" data-view="all">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>All Chats</span>
+            <span class="nav-count" id="navCountAll">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="recent">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            <span>Recent Chats</span>
+            <span class="nav-count" id="navCountRecent">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="favorites">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+            <span>Favorites</span>
+            <span class="nav-count" id="navCountFav">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="folders">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span>Folders</span>
+            <span class="nav-count" id="navCountFolders">0</span>
+          </button>
+          <button class="nav-item" type="button" data-view="tags">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+            <span>Tags</span>
+            <span class="nav-count" id="navCountTags">0</span>
+          </button>
+        </div>
+
+        <!-- Dynamic Folders Shortcut Tree -->
+        <div class="nav-group">
+          <div class="nav-group__header">
+            <span class="nav-group__label">Folders</span>
+            <button id="sidebarNewFolderBtn" class="mini-add-btn" type="button" title="New Folder">+</button>
+          </div>
+          <div id="sidebarFoldersList" class="nav-sublist"></div>
+        </div>
+
+        <!-- Dynamic Tags Filter List -->
+        <div class="nav-group">
+          <div class="nav-group__header">
+            <span class="nav-group__label">Tags</span>
+            <button id="sidebarNewTagBtn" class="mini-add-btn" type="button" title="New Tag">+</button>
+          </div>
+          <div id="sidebarTagsList" class="tag-cloud-sidebar"></div>
+        </div>
+      </nav>
+
+      <div class="sidebar__footer">
+        <button class="nav-item" type="button" data-view="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+          <span>Settings</span>
+        </button>
+
+        <div class="storage-mini">
+          <div class="storage-mini__row">
+            <span>Local Storage</span>
+            <span id="sidebarStorageText">0 B</span>
+          </div>
+          <div class="storage-mini__bar">
+            <div id="sidebarStorageBar" class="storage-mini__fill" style="width: 0%"></div>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Workspace -->
+    <div class="main-area">
+      <!-- Top Bar -->
+      <header class="topbar">
+        <div class="topbar__left">
+          <button id="openSidebarBtn" class="icon-btn mobile-only" type="button" aria-label="Open menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="view-heading">
+            <h1 id="viewTitle" class="view-heading__title">All Chats</h1>
+            <span id="viewSubtitle" class="view-heading__sub">0 conversations</span>
+          </div>
+        </div>
+
+        <div class="topbar__right">
+          <div id="searchWrap" class="search-box">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="search-box__icon">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input id="searchInput" type="search" class="search-box__input" placeholder="Search titles, messages, tags, folders… (Ctrl+K)" aria-label="Search saved conversations">
+            <button id="clearSearchBtn" class="search-box__clear hidden" type="button" aria-label="Clear search">×</button>
+          </div>
+
+          <button id="quickBackupBtn" class="btn btn--secondary btn--sm" type="button" title="Export full JSON backup">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            <span>Backup JSON</span>
+          </button>
+
+          <button id="themeToggleBtn" class="icon-btn" type="button" title="Toggle Light / Dark Theme" aria-label="Toggle theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path></svg>
+          </button>
+        </div>
+      </header>
+
+      <!-- Chats Controls Toolbar -->
+      <section id="chatsToolbar" class="filter-toolbar" aria-label="Filters and sorting">
+        <div class="filter-pills" role="group" aria-label="Quick filters">
+          <button class="filter-pill is-active" type="button" data-filter="all">All</button>
+          <button class="filter-pill" type="button" data-filter="chatgpt">ChatGPT</button>
+          <button class="filter-pill" type="button" data-filter="claude">Claude</button>
+          <button class="filter-pill" type="button" data-filter="favorites">Favorites</button>
+          <button class="filter-pill" type="button" data-filter="recent">Recent</button>
+          <span id="activeChipWrap" class="active-chip-wrap"></span>
+        </div>
+
+        <div class="sort-wrap">
+          <label for="sortSelect" class="sort-label">Sort:</label>
+          <select id="sortSelect" class="select-input">
+            <option value="newest">Newest First</option>
+            <option value="oldest">Oldest First</option>
+            <option value="alpha">Alphabetical (A–Z)</option>
+            <option value="updated">Recently Updated</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Main Dynamic Views -->
+      <main class="workspace-content">
+        <!-- View 1: Chats Grid (All, Recent, Favorites, Folder-filtered, Tag-filtered) -->
+        <section id="chatsView" class="view-section">
+          <div id="chatsGrid" class="chats-grid"></div>
+          <div id="chatsEmptyState" class="empty-state hidden"></div>
+        </section>
+
+        <!-- View 2: Folders Manager -->
+        <section id="foldersView" class="view-section hidden">
+          <div class="panel-header-row">
+            <div>
+              <h2>Folders</h2>
+              <p class="muted-desc">Organize conversations into custom folders. Deleting a folder safely moves its conversations to <strong>Unfiled</strong>.</p>
+            </div>
+            <button id="createFolderPageBtn" class="btn btn--primary" type="button">+ Create Folder</button>
+          </div>
+          <div id="foldersManagerGrid" class="manager-grid"></div>
+        </section>
+
+        <!-- View 3: Tags Manager -->
+        <section id="tagsView" class="view-section hidden">
+          <div class="panel-header-row">
+            <div>
+              <h2>Tags</h2>
+              <p class="muted-desc">Create reusable tags, assign multiple tags per conversation, and click any tag to filter chats.</p>
+            </div>
+            <button id="createTagPageBtn" class="btn btn--primary" type="button">+ Create Tag</button>
+          </div>
+          <div id="tagsManagerGrid" class="manager-grid"></div>
+          <div id="tagsEmptyState" class="empty-state hidden">
+            <h3>No custom tags yet</h3>
+            <p>Create tags to categorize conversations by topic, project, or programming language.</p>
+            <button id="emptyNewTagBtn" class="btn btn--primary" type="button">+ Create First Tag</button>
+          </div>
+        </section>
+
+        <!-- View 4: Settings -->
+        <section id="settingsView" class="view-section hidden">
+          <div class="settings-grid">
+            <!-- Appearance & Export -->
+            <div class="settings-card">
+              <h3>Preferences</h3>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-row__title">Color Theme</div>
+                  <div class="setting-row__desc">Switch between clean Light mode and low-glare Dark mode.</div>
+                </div>
+                <select id="settingThemeSelect" class="select-input setting-control">
+                  <option value="light">Light Theme</option>
+                  <option value="dark">Dark Theme</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-row__title">Default Export Format</div>
+                  <div class="setting-row__desc">Pre-selected format when opening the Export dialog.</div>
+                </div>
+                <select id="settingExportSelect" class="select-input setting-control">
+                  <option value="pdf">PDF (.pdf)</option>
+                  <option value="markdown">Markdown (.md)</option>
+                  <option value="txt">Plain Text (.txt)</option>
+                </select>
+              </div>
+              <div class="setting-row">
+                <div>
+                  <div class="setting-row__title">Default Filename Pattern</div>
+                  <div class="setting-row__desc">Supports <code>{title}</code>, <code>{platform}</code>, and <code>{date}</code>.</div>
+                </div>
+                <input id="settingFilenameInput" type="text" class="text-input setting-control" placeholder="{title}">
+              </div>
+            </div>
+
+            <!-- Backup & Restore -->
+            <div class="settings-card">
+              <h3>Backup &amp; Restore</h3>
+              <p class="muted-desc">Export your entire library (conversations, folders, tags, and preferences) as portable JSON, or restore from a previous backup.</p>
+              <div class="backup-actions">
+                <button id="exportBackupBtn" class="btn btn--primary" type="button">Export Full JSON Backup</button>
+                <label class="btn btn--secondary file-label">
+                  Import JSON Backup
+                  <input id="importBackupInput" type="file" accept=".json,application/json" hidden>
+                </label>
+              </div>
+              <div id="importPreviewBox" class="import-preview hidden"></div>
+            </div>
+
+            <!-- Storage Info -->
+            <div class="settings-card">
+              <h3>Local Storage Information</h3>
+              <div class="storage-stats-grid" id="storageStatsGrid"></div>
+              <div class="storage-progress">
+                <div class="storage-progress__bar">
+                  <div id="settingsStorageBar" class="storage-progress__fill" style="width: 0%"></div>
+                </div>
+                <span id="settingsStorageLabel" class="muted-desc">0 B used</span>
+              </div>
+            </div>
+
+            <!-- Privacy & About -->
+            <div class="settings-card">
+              <h3>Privacy &amp; Security</h3>
+              <ul class="privacy-list">
+                <li><strong>100% Local Processing:</strong> All saved chats, folders, and tags live strictly inside <code>chrome.storage.local</code>.</li>
+                <li><strong>Zero External Servers:</strong> No conversations, credentials, cookies, or analytics are ever transmitted anywhere.</li>
+                <li><strong>Explicit User Action Only:</strong> Conversations are only captured when you click <em>Save Current Chat</em>.</li>
+                <li><strong>Offline Exports:</strong> PDF, Markdown, TXT, and JSON backups are generated locally in your browser.</li>
+              </ul>
+              <div class="version-row">
+                <span>Extension Version:</span>
+                <strong id="extensionVersion">1.0.0</strong>
+              </div>
+            </div>
+
+            <!-- Danger Zone -->
+            <div class="settings-card settings-card--danger">
+              <h3>Danger Zone</h3>
+              <p class="muted-desc">Permanently delete all saved conversations, custom folders, and tags from local browser storage. Export a JSON backup first if needed.</p>
+              <button id="clearAllDataBtn" class="btn btn--danger" type="button">Clear All Saved Data</button>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- Reusable Modal -->
+  <div id="modalBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="modal-card__header">
+        <h3 id="modalTitle" class="modal-card__title">Modal</h3>
+        <button id="modalCloseBtn" class="icon-btn" type="button" aria-label="Close modal">×</button>
+      </div>
+      <div id="modalBody" class="modal-card__body"></div>
+      <div id="modalFooter" class="modal-card__footer"></div>
+    </div>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+
+  <script src="../lib/jspdf.umd.min.js"></script>
+  <script type="module" src="history.js"></script>
+</body>
+</html>

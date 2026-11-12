@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chat Saver – Advanced Edition</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-shell">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="brand">
+        <img src="assets/icons/icon32.png" alt="Chat Saver icon" class="brand__icon">
+        <div class="brand__text">
+          <div class="brand__title-row">
+            <span class="brand__name">Chat Saver</span>
+            <span class="brand__badge">Advanced</span>
+          </div>
+          <p class="brand__tagline">Your AI Conversations, Organized Forever.</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <button id="themeToggleBtn" class="icon-btn" type="button" title="Toggle Light / Dark Theme" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="4"></circle>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"></path>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"></path>
+          </svg>
+        </button>
+        <button id="openDashboardBtn" class="btn btn--secondary btn--sm" type="button" title="Open Full Dashboard">
+          Dashboard
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon-right">
+            <path d="M7 17L17 7M7 7h10v10"></path>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Active Tab Capture Panel -->
+    <section class="capture-card" aria-label="Current tab conversation">
+      <div class="capture-card__top">
+        <span id="platformBadge" class="platform-pill platform-pill--neutral">Detecting tab...</span>
+        <span id="savedStatePill" class="state-pill hidden"></span>
+      </div>
+
+      <h2 id="tabTitlePreview" class="capture-card__title">Checking active browser tab…</h2>
+      <p id="tabHintText" class="capture-card__hint"></p>
+
+      <div id="saveOptionsRow" class="save-options hidden">
+        <label class="field-mini">
+          <span class="field-mini__label">Folder</span>
+          <select id="folderSelect" class="select-input">
+            <option value="unfiled">Unfiled</option>
+          </select>
+        </label>
+        <label class="field-mini">
+          <span class="field-mini__label">Tags (comma-separated)</span>
+          <input id="quickTagsInput" type="text" class="text-input" placeholder="e.g. coding, research">
+        </label>
+      </div>
+
+      <!-- Primary Action Buttons -->
+      <div id="actionControls" class="capture-actions">
+        <button id="saveBtn" class="btn btn--primary btn--full" type="button" disabled>
+          <span class="spinner hidden" id="saveSpinner"></span>
+          <svg id="saveIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="btn-icon-left">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+            <polyline points="17 21 17 13 7 13 7 21"></polyline>
+            <polyline points="7 3 7 8 15 8"></polyline>
+          </svg>
+          <span id="saveBtnLabel">Save Current Chat</span>
+        </button>
+      </div>
+
+      <!-- Duplicate / Update Decision Box -->
+      <div id="duplicatePanel" class="duplicate-panel hidden">
+        <p id="duplicateMessage" class="duplicate-panel__text"></p>
+        <div class="duplicate-panel__buttons">
+          <button id="updateExistingBtn" class="btn btn--primary btn--sm" type="button">Update Existing</button>
+          <button id="saveCopyBtn" class="btn btn--secondary btn--sm" type="button">Save as Copy</button>
+          <button id="viewExistingBtn" class="btn btn--ghost btn--sm" type="button">Open Details</button>
+        </div>
+      </div>
+
+      <!-- Status / Error Alert -->
+      <div id="statusAlert" class="status-alert hidden" role="status"></div>
+    </section>
+
+    <!-- Quick Stats -->
+    <section class="stats-strip" aria-label="Saved library stats">
+      <button class="stat-chip" type="button" data-nav="all">
+        <span class="stat-chip__value" id="statTotal">0</span>
+        <span class="stat-chip__label">All Chats</span>
+      </button>
+      <button class="stat-chip" type="button" data-nav="favorites">
+        <span class="stat-chip__value" id="statFavorites">0</span>
+        <span class="stat-chip__label">Favorites</span>
+      </button>
+      <button class="stat-chip" type="button" data-nav="folders">
+        <span class="stat-chip__value" id="statFolders">0</span>
+        <span class="stat-chip__label">Folders</span>
+      </button>
+    </section>
+
+    <!-- Recent Chats -->
+    <section class="recent-section" aria-label="Recent saved chats">
+      <div class="section-header">
+        <h3 class="section-title">Recent Saved Chats</h3>
+        <button id="viewAllLink" class="link-btn" type="button">View all →</button>
+      </div>
+      <div id="recentList" class="recent-list"></div>
+      <div id="recentEmpty" class="recent-empty hidden">
+        <p>No conversations saved yet.</p>
+        <span>Open ChatGPT or Claude and click <strong>Save Current Chat</strong>.</span>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span class="privacy-pill" title="All conversations are stored locally in your browser">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+          <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+        </svg>
+        100% Local Storage
+      </span>
+      <button id="openSettingsBtn" class="link-btn" type="button">Settings</button>
+    </footer>
+  </div>
+
+  <div id="toastContainer" class="toast-container" aria-live="polite"></div>
+  <script type="module" src="popup.js"></script>
+</body>
+</html>
